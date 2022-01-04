@@ -1,5 +1,12 @@
 /*jshint esversion: 6 */ // This shit will be removed in future
-/*jshint -W061 */ // This shit will be removed in future too BUT if this is not a security issue
+/*jshint -W061 */ // This shit will be removed in future too BUT if this is not a security issue, this will remain
+
+/**
+ * @title Dependencies
+ * @author NWJ9PB
+ * @description Load required dependencies
+ * @version 0.0.2-cuttingedge
+ */
 
 require('dotenv').config(); // .env
 const fs = require('fs'); // File system
@@ -7,128 +14,94 @@ const express = require('express'); // Express
 const app = express();
 const port = process.env.SERVER_PORT;
 const isOnline = require('is-online'); // isOnline
-
-// Get the log and chalk functions
-const log = require('./functions.js').log;
-const chalk = require('./functions.js').chalk;
-
-// Combine the log and chalk functions
-//Log sample message
-log('info', 'Sample message');
+const readlineSync = require('readline-sync'); // readlineSync
+const chalk = require('chalk'); // Chalk
 
 
+// Custom functions
+const { alog } = require('./functions.js');
 
+/**
+ * @title ServerCheckInit
+ * @author NWJ9PB
+ * @description Check dependencies, core and config files
+ * @version 0.0.2-cuttingedge
+ */
 
-// Start server 
-app.listen(port, () => {
-  // Log Starting Server Checks
-  log('info', 'Starting Server Checks');
+// Check if git is present (Experimental, may be removed in future) 
+alog('info', 'node', 'Checking if git is present');
+if (fs.existsSync('.git')) {
+  alog('info', 'node', 'Git is present');
+} else {
+  alog('error', 'node', 'Git is not present, exiting');
+  process.exit(1);
+}
 
-  // Check if Localhost in .env file is true
-  if (process.env.LOCALHOST === 'TRUE') {
-    // If true, log info message
-    log('info', 'Server is running on LOCALHOST, Internet connection is optional');
-  } else {
-    // If false, log info message
-    log('info', 'Server is running on REMOTE, Internet connection is required');
-  }
-
-  // Check if debug in .env file is true
-  if (process.env.DEBUG === 'TRUE') {
-    // Log debug message
-    log('debug', 'Debug is enabled');
-  }
-
-  // Check if git is installed on the system
-  if (fs.existsSync('.git')) {
-    // Check git version
-    const gitVersion = require('child_process').execSync('git --version').toString().trim();
-    // Log info git version
-    log('info', 'Git Version: ' + gitVersion);
-  } else {
-    // Log error git not installed
-    log('error', 'Git is not installed');
-  }
-
-  // Get all files from /include/
-  const files = fs.readdirSync('./modules/');
-  // Start log reading include files
-  log('info', 'Reading modules');
-  // Do a readfilesync on each file
-  files.forEach(file => {
-    // check if the file is a .js file
-    if (file.endsWith('.js')) {
-      // require the file
-      eval(fs.readFileSync(`./modules/${file}`) + '');
-    }
+// Check if node_modules is present
+alog('info', 'node', 'Checking if node_modules is present');
+if (fs.existsSync('node_modules')) {
+  alog('info', 'node', 'node_modules is present');
+  // List out the modules
+  fs.readdirSync('node_modules').forEach(file => {
+    alog('info', 'node', 'Found module: ' + chalk.red(file));
   });
-  log('info', 'File Loaded: ' + chalk.bold.underline.red(files));
+} else {
+  alog('error', 'node', 'node_modules is not present, please run npm install, exiting');
+  process.exit(1);
+}
 
-  // Ask question if user wants to update NPM packages
-  log('info', 'Do you want to update NPM packages? (y/N)');
-  // Define readlineSync
-  const readlineSync = require('readline-sync');
-  // Get the answer
-  const answer = readlineSync.question();
-  // Check if answer is y, set default to n
-  if (answer === 'y') {
-    // Update NPM packages
-    require('child_process').execSync('npm install');
+// Check internet connection
+alog('info', 'node', 'Checking internet connection');
+isOnline().then(online => {
+  if (online) {
+    alog('info', 'network', 'Internet connection is online');
   } else {
-    // Log info message
-    log('info', 'Skipping NPM Dependencies check');
+    alog('error', 'network', 'Internet connection is offline, exiting');
+    process.exit(1);
   }
-    //Listen for '.stop' on console
-  process.stdin.on('data', function (data) {
-    // If '.stop' is typed
-    if (data.toString().trim() === '.stop') {
-      // Log info server stopped
-      log('info', 'Server Stopped');
-      // Exit the process
-      process.exit(0);
-    }
-    // If '.mem' is typed
-    if (data.toString().trim() === '.mem') {
-      // Log info memory usage in MB
-      log('info', 'Memory Usage: ' + (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2) + ' MB');
-    }
-
-    // If '.modules' is typed
-    if (data.toString().trim() === '.modules') {
-      // Log info modules
-      log('info', 'Modules: ' + files);
-    }
-  });
-    
-  // Check if connected to the internet using is-online
-  isOnline().then(online => {
-    // Log info if connected to the internet
-    if (online) {
-      log('info', 'Connected to the internet');
-      // Check if localhost is true
-      if (process.env.LOCALHOST === 'FALSE') {
-        // Log info hi
-        log('info', 'Hi');
-
-      } else {
-        // Log error if something went wrong
-        log('error', 'Something went wrong, please check your .env file');
-      }
-    } else {
-      // Log error if not connected to the internet
-      log('error', 'Not connected to the internet');
-    }
-  });
 });
-// Log info server started
-log('info', 'Server Started');
+
+// Check all endpoints
+alog('info', 'node', 'Checking endpoints');
+fs.readdirSync('./modules').forEach(file => {
+  alog('info', 'node', 'Found endpoint: ' + chalk.red(file));
+});
+
+// Check port if it is in use
+alog('info', 'node', 'Checking port');
+if (port === undefined) {
+  alog('error', 'node', 'Port is undefined, exiting');
+  process.exit(1);
+} else {
+  alog('info', 'node', 'Port is defined');
+}
+
+// Check if port is in use by another process
+alog('info', 'node', 'Checking if port is in use');
+if (require('fs').existsSync('/tmp/app.pid')) {
+  alog('error', 'node', 'Port is in use, exiting');
+  process.exit(1);
+} else {
+  alog('info', 'node', 'Port is not in use');
+}
+
+app.listen(port, () => {
+  alog('node', 'server', 'Server started on port ' + chalk.redBright.bgBlack.bold(port));
+  
+});
 
 
+/**
+ * @title List of endpoints
+ * @author NWJ9PB
+ * @description List out all endpoints
+ * @version 0.0.2-cuttingedge
+ */
 
 // List out all all api routes
 app.get('/', (req, res) => {
-  // Log info message
-  log('info', 'Listing all routes');
+  // Log the request
+  alog('log', 'client', 'Request received');
   // List all routes
   res.json({
     '/anime/search/:query': 'Search for anime',
@@ -141,5 +114,5 @@ app.get('/', (req, res) => {
     '/anime/:id/moreinfo': 'Get anime moreinfo',
     '/anime/:id/news': 'Get anime news',
     '/anime/:id/pictures': 'Get anime pictures',
-  })
+  });
 });
