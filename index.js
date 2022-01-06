@@ -8,15 +8,16 @@
  * @version 0.0.2-cuttingedge
  */
 
-require('dotenv').config(); // .env
-const fs = require('fs'); // File system
-const express = require('express'); // Express
-const app = express();
-const port = process.env.SERVER_PORT;
-const isOnline = require('is-online'); // isOnline
-const readlineSync = require('readline-sync'); // readlineSync
-const chalk = require('chalk'); // Chalk
-
+require('dotenv').config();
+const fs            = require('fs');
+const express       = require('express');
+const app           = express();
+const port          = process.env.SERVER_PORT;
+const isOnline      = require('is-online');
+const readlineSync  = require('readline-sync');
+const chalk         = require('chalk');
+const os            = require('os');
+const path          = require('path');
 
 // Custom functions
 const { alog } = require('./functions.js');
@@ -43,7 +44,7 @@ if (fs.existsSync('node_modules')) {
   alog('info', 'node', 'node_modules is present');
   // List out the modules
   fs.readdirSync('node_modules').forEach(file => {
-    alog('info', 'node', 'Found module: ' + chalk.red(file));
+    alog('info', 'node', chalk.yellow.bold('FSREAD ')+'Found module: ' + chalk.red(file));
   });
 } else {
   alog('error', 'node', 'node_modules is not present, please run npm install, exiting');
@@ -63,7 +64,7 @@ isOnline().then(online => {
 
 // Check all endpoints
 alog('info', 'node', 'Checking endpoints');
-fs.readdirSync('./modules').forEach(file => {
+fs.readdirSync('./endpoints').forEach(file => {
   alog('info', 'node', 'Found endpoint: ' + chalk.red(file));
 });
 
@@ -85,11 +86,13 @@ if (require('fs').existsSync('/tmp/app.pid')) {
   alog('info', 'node', 'Port is not in use');
 }
 
+// Get sha1 of git
+const sha1 = require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
+alog('info', 'node', 'Current Git Signature: ' + chalk.red(sha1));
+
 app.listen(port, () => {
   alog('node', 'server', 'Server started on port ' + chalk.redBright.bgBlack.bold(port));
-  
 });
-
 
 /**
  * @title List of endpoints
