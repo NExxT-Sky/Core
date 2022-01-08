@@ -1,25 +1,20 @@
-/*jshint esversion: 6 */ // This shit will be removed in future
-/*jshint -W061 */ // This shit will be removed in future too BUT if this is not a security issue, this will remain
+/**
+ * @project_title - SkyCore
+ * @project_description - A multipurpose API framework, primarily for anime related projects of Sky Projects
+ */
 
 /**
  * @title Dependencies
- * @author NWJ9PB
- * @description Load required dependencies
- * @version 0.0.2-cuttingedge
+ * @description Importing dependencies, nothing else
  */
 
-require('dotenv').config();
-const fs            = require('fs');
-const express       = require('express');
-const app           = express();
-const port          = process.env.SERVER_PORT;
-const isOnline      = require('is-online');
-const readlineSync  = require('readline-sync');
-const chalk         = require('chalk');
-const os            = require('os');
-const path          = require('path');
+// Dependencies
+const { fs, express, app, isOnline, readlineSync, chalk, os, path } = require('./deps.js');
 
-// Custom functions
+// Config
+const { API_PORT } = require('./config.js');
+
+// Functions
 const { alog } = require('./functions.js');
 
 /**
@@ -28,6 +23,13 @@ const { alog } = require('./functions.js');
  * @description Check dependencies, core and config files
  * @version 0.0.2-cuttingedge
  */
+//TODO: Convert as one function
+
+// Check if .env file loaded
+if (!fs.existsSync('.env')) {
+  alog('error', 'server', 'No .env file found, please create one');
+  process.exit(1);
+}
 
 // Check if git is present (Experimental, may be removed in future) 
 alog('info', 'node', 'Checking if git is present');
@@ -55,9 +57,9 @@ if (fs.existsSync('node_modules')) {
 alog('info', 'node', 'Checking internet connection');
 isOnline().then(online => {
   if (online) {
-    alog('info', 'network', 'Internet connection is online');
+    alog('info', 'network', 'Connected to the internet');
   } else {
-    alog('error', 'network', 'Internet connection is offline, exiting');
+    alog('error', 'network', 'Not connected to the internet, exiting');
     process.exit(1);
   }
 });
@@ -70,7 +72,7 @@ fs.readdirSync('./endpoints').forEach(file => {
 
 // Check port if it is in use
 alog('info', 'node', 'Checking port');
-if (port === undefined) {
+if (API_PORT === undefined) {
   alog('error', 'node', 'Port is undefined, exiting');
   process.exit(1);
 } else {
@@ -86,12 +88,13 @@ if (require('fs').existsSync('/tmp/app.pid')) {
   alog('info', 'node', 'Port is not in use');
 }
 
-// Get sha1 of git
+// Get  current git signature and branch
 const sha1 = require('child_process').execSync('git rev-parse --short HEAD').toString().trim();
 alog('info', 'node', 'Current Git Signature: ' + chalk.red(sha1));
+alog('info', 'node', 'Current Git Branch: ' + chalk.red(require('child_process').execSync('git rev-parse --abbrev-ref HEAD').toString().trim()));
 
-app.listen(port, () => {
-  alog('node', 'server', 'Server started on port ' + chalk.redBright.bgBlack.bold(port));
+app.listen(API_PORT, () => {
+  alog('node', 'server', 'Server started on port ' + chalk.redBright.bgBlack.bold(API_PORT));
 });
 
 /**
@@ -107,15 +110,17 @@ app.get('/', (req, res) => {
   alog('log', 'client', 'Request received');
   // List all routes
   res.json({
-    '/anime/search/:query': 'Search for anime',
-    '/anime/:id': 'Get anime by id',
-    '/anime/:id/episodes': 'Get anime episodes',
-    '/anime/:id/characters': 'Get anime characters',
-    '/anime/:id/reviews': 'Get anime reviews',
-    '/anime/:id/recommendations': 'Get anime recommendations',
-    '/anime/:id/stats': 'Get anime stats',
-    '/anime/:id/moreinfo': 'Get anime moreinfo',
-    '/anime/:id/news': 'Get anime news',
-    '/anime/:id/pictures': 'Get anime pictures',
+    '/anime/': 'MyAnimeList API/Lookup',
+    '/nyaa/': 'Nyaa.si API/Lookup',
+  });
+});
+
+// Catch all undefined routes
+app.get('*', (req, res) => {
+  // Log the request
+  alog('log', 'client', 'Request received');
+  // Send 'status: 404' as json
+  res.json({
+    status: 404,
   });
 });
