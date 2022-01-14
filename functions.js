@@ -1,69 +1,72 @@
 /*jshint esversion: 6 */ // This shit will be removed in future
 /*jshint -W061 */ // This shit will be removed in future too BUT if this is not a security issue, this will remain
 
-// Import chalk dependency
+// Import dependencies
 const { chalk, os, table, fs, path } = require('./deps.js');
 
 /**
-* @title ConsoleLogger
-* @author NWJ9PB
-* @description With added what action is being logged
-* @version 0.0.2-cuttingedge
-* @license MIT
-* 
-* @param {string} type - The type of log to be made
-* @param {string} aclass - The class of the log
-* @param {string} message - The message to be logged
-*/
+ * @title ConLog
+ * @author NWJ9PB
+ * @description Logs messages to console with colors
+ * @version 0.0.3-cuttingedge
+ * 
+ * @param {string} class - Name of class to be logged
+ * @param {string} type - Name of type to be logged
+ * @param {string} message - The message to be logged
+ */
 
-const alog = (type, aclass, message) => {
+const ConLog = (className, type, message) => {
+  className = className.toLowerCase();
+  className = className.padEnd(8, ' ');
+
   type = type.toLowerCase();
-  aclass = aclass.toLowerCase();
-  
-  switch (aclass) {
+  type = type.padEnd(8, ' ');
+
+  // Switch statement for class for colors
+  switch (className) {
     case 'node':
-    lclass =  chalk.bgBlack.blueBright.bold(' NODE ');
-    break;
+      className = chalk.bgBlack.blueBright.bold('NODE');
+      break;
     case 'server':
-    lclass =  chalk.bgBlack.yellow.bold(' SRV  ');
-    break;
+      className = chalk.bgBlack.yellow.bold('SERVER');
+      break;
     case 'client':
-    lclass = chalk.bgBlack.white.bold(' CNT  ');
-    break;
+      className = chalk.bgBlack.cyan.bold('CLIENT');
+      break;
     case 'database':
-    lclass = chalk.bgBlack.cyan.bold(' DB   ');
-    break;
+      className = chalk.bgBlack.cyan.bold('DATABASE');
+      break;
     case 'network':
-    lclass = chalk.bgBlack.blue.bold(' NET  ');
-    break;
+      className = chalk.bgBlack.blue.bold('NETWORK');
+      break;
     default:
-    lclass =  chalk.bgBlack.black.bold(' LOG  ');
+      className = chalk.bgBlack.white.bold(className.toUpperCase());
   }
-  
+
+  // Switch statement for type for colors
   switch (type) {
-    case 'info':
-    ltype =  chalk.bgBlackBright.white.bold(' INFO ');
-    break;
-    case 'error':
-    ltype = chalk.bgRedBright(' ERROR');
-    break;
-    case 'warn':
-    ltype =  chalk.bgYellow.red.bold(' WARN ');
-    break;
-    case 'debug':
-    ltype = chalk.bgCyan.inverse.bold(' DEBUG');
-    break;
-    case 'fatal':
-    ltype = chalk.bgRedBright(' FATAL');
-    break;
-    case 'log':
-    ltype =  chalk.bgBlackBright(' LOG  ');
-    break;
+    case 'INFO':
+      type = chalk.bgBlack.white.bold('INFO');
+      break;
+    case 'ERROR':
+      type = chalk.bgRed.white.bold('ERROR');
+      break;
+    case 'WARN':
+      type = chalk.bgYellow.red.bold('WARN');
+      break;
     default:
-    ltype =  chalk.bgBlackBright.white.bold(' INFO ');
+      type = chalk.bgBlack.white.bold(type.toUpperCase());
   }
+
+  const logDate = new Date().toISOString().replace('T', ' ').replace(/\..+/, '');
+
+  // Log message on console
+  console.log(chalk.black.bold('[' + logDate + '] ') + className + chalk.bgBlack(' > ') + type + chalk.bgBlack(' > ') + chalk.bgBlack.white(message));
   
-  console.log(chalk.gray('['+ new Date().toISOString() +']') + lclass +chalk.bgBlack.bold('=>')+ ltype +chalk.bgBlack.bold('=> ')+ message);
+  //TODO: Log message to file, with ability to just append, instead of overwriting or creating new file
+
+  // Log message to file
+  //fs.appendFileSync('./logs/log.txt', '[' + logDate + '] ' + className + ' > ' + type + ' > ' + message + '\n');
 };
 
 /**
@@ -167,7 +170,7 @@ sysConsole.addListener("data", function (d) {
       }
 
       break;
-
+    
     case 'help':
       alog('info', 'node', 'Help');
       alog('info', 'node', 'exit - Exits the program');
@@ -192,5 +195,5 @@ sysConsole.addListener("data", function (d) {
     
 // Export all the functions
 module.exports = {
-  alog,
+  ConLog,
 };

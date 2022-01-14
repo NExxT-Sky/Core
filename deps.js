@@ -8,6 +8,9 @@ const chalk         = require('chalk');
 const os            = require('os');
 const path          = require('path');
 const table         = require('cli-table');
+const crypto        = require('crypto');
+const jikan         = require('jikan-node');
+const mal           = new jikan();      
 
 module.exports = {
     fs,
@@ -19,4 +22,6 @@ module.exports = {
     os,
     path,
     table,
+    crypto,
+    mal,
 }
