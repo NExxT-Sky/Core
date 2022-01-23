@@ -4,7 +4,12 @@
   "description": "Core API for Sky projects",
   "main": "main.js",
   "scripts": {
-    "test": "nodemon main.js"
+    "start": "NODE_ENV=production node ./bin/www",
+    "dev": "NODE_ENV=development nodemon ./bin/www",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "repository": {
     "type": "git",
@@ -20,5 +25,13 @@
   "bugs": {
     "url": "https://github.com/NExxT-Sky/Core/issues"
   },
-  "homepage": "https://github.com/NExxT-Sky/Core#readme"
+  "homepage": "https://github.com/NExxT-Sky/Core#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.2",
+    "helmet": "^5.0.2",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0",
+    "nyaapi": "^2.4.3"
+  }
 }
