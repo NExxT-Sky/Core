@@ -12,10 +12,10 @@ const router = express.Router();
  * @apiSuccess {String} message Message of the API
  * @apiSuccessExample {json} Success-Response:
  *  HTTP/1.1 200 OK
- *    {  
+ *    {
  *      "status": "success",
- *      "message": "Welcome to the API"  
- *    } 
+ *      "message": "Welcome to the API"
+ *    }
  */
 
 router.get('/', (req, res) => {
