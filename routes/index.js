@@ -94,7 +94,7 @@ router.get('/api/anime/:id', (req, res) => {
   const id = req.params.id;
   const jikan = require('jikan-node');
   const mal = new jikan();
-  
+
   mal.findAnime(id)
     .then(result => {
       res.json(result);
@@ -103,6 +103,47 @@ router.get('/api/anime/:id', (req, res) => {
       res.json(err);
     });
 });
+
+/**
+ * @api {get} /api/anime/:id/characters Get anime characters
+ * @apiName GetAnimeCharacters
+ * @apiGroup API/Anime
+ * @apiVersion 1.0.0
+ * @apiDescription Get anime characters using MyAnimeList's API
+ * @apiParam {int} id ID of the anime
+ */
+router.get('/api/anime/:id/characters', (req, res) => {
+  const id = req.params.id;
+  const jikan = require('jikan-node');
+  const mal = new jikan();
+
+  mal.getAnimeCharacters(id)
+    .then(result => {
+      res.json(result);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+// Search using Jikan4
+router.get('/api/v4/anime/:q', (req, res) => {
+  const q = req.params.q;
+  const jikan4 = require('jikan-yon');
+  const j4 = new jikan4();
+
+  j4.searchAnime(q)
+  // Return the result without promise
+    .then(result => {
+      res.json(result);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
+
+
+
 
 //* Manga Routes
 
@@ -150,7 +191,9 @@ router.get('/api/manga/:id', (req, res) => {
     });
 });
 
-// NYAA Routes
+
+/** NYAA Routes */
+
 /**
  * @api {get} /api/nyaa/search/:q Search for a torrent
  * @apiName SearchTorrent
