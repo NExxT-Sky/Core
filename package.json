@@ -32,6 +32,7 @@
     "helmet": "^5.0.2",
     "http-errors": "^2.0.0",
     "jikan-node": "^1.2.1",
+    "jikan-yon": "file:jikan-yon-0.0.1.tgz",
     "morgan": "^1.10.0",
     "nyaapi": "^2.4.3"
   }
