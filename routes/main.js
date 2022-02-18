@@ -233,15 +233,15 @@ router.get('/anime/:id/characters', (req, res) => {
 });
 
 /**
- * Fetch Anime Staff
- * @route GET /anime/:id/staff
+ * Fetch Anime Staffs
+ * @route GET /anime/:id/staffs
  * @content_type application/json
  * @group Anime
  * @param {string} id.query.required - Anime id
- * @returns {object} 200 - Anime staff
+ * @returns {object} 200 - Anime staffs
  * @returns {Error} 404 - No anime matching id
  */
-router.get('/anime/:id/staff', (req, res) => {
+router.get('/anime/:id/staffs', (req, res) => {
   const anilist_api = require('anilist-node');
   const Anilist = new anilist_api();
 
@@ -322,6 +322,36 @@ router.get('/anime/:id/images', (req, res) => {
         },
       });
     };
+  });
+});
+
+/**
+ * Fetch Anime Genre
+ * @route GET /anime/:id/genre
+ * @content_type application/json
+ * @group Anime
+ * @param {string} id.query.required - Anime id
+ * @returns {object} 200 - Anime genre
+ * @returns {Error} 404 - No anime matching id
+ */
+router.get('/anime/:id/genres', (req, res) => {
+  const anilist_api = require('anilist-node');
+  const Anilist = new anilist_api();
+
+  const id = parseInt(req.params.id);
+
+  Anilist.media.anime(id).then(data => {
+    if (data[0]?.message === 'Not Found.') {
+      res.status(404).json({
+        result: 'error',
+        error: 'No anime matching id'
+      });
+    } else {
+      res.json({
+        result: 'success',
+        data: data.genres
+      });
+    }
   });
 });
 
