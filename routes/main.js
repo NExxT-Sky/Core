@@ -271,7 +271,7 @@ router.get('/anime/:id/staff', (req, res) => {
  * @returns {object} 200 - Anime studio
  * @returns {Error} 404 - No anime matching id
  */
-router.get('/anime/:id/studio', (req, res) => {
+router.get('/anime/:id/studios', (req, res) => {
   const anilist_api = require('anilist-node');
   const Anilist = new anilist_api();
 
