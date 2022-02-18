@@ -17,7 +17,6 @@ const router = express.Router();
  *      "message": "Welcome to the API"
  *    }
  */
-
 router.get('/', (req, res) => {
   res.json({
     status: 'success',
