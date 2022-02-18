@@ -27,12 +27,14 @@
   },
   "homepage": "https://github.com/NExxT-Sky/Core#readme",
   "dependencies": {
+    "anilist-node": "^1.11.0",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.2",
     "helmet": "^5.0.2",
     "http-errors": "^2.0.0",
+    "jikan-api.js": "^1.0.2",
     "jikan-node": "^1.2.1",
-    "jikan-yon": "file:jikan-yon-0.0.1.tgz",
+    "jikan4.js": "^0.1.3",
     "morgan": "^1.10.0",
     "nyaapi": "^2.4.3"
   }
