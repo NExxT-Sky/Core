@@ -1,31 +1,36 @@
+/** Dependencies */
 const express = require('express');
+const app = express();
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet');
 
-const indexRouter = require('./routes/index');
+/** Main  */
+const version = 'main';
+const indexRouter = require(`./routes/${version}.js`);
 
-const errorHandler = require('./middleware/errorHandler');
+/** Error Handling */
+const errorHandler = require('./middleware/errorHandler.js');
 
-const app = express();
 
-app.use(helmet()); // https://expressjs.com/en/advanced/best-practice-security.html#use-helmet
-app.use(logger('combined'));
+/** Security Parameters */
+app.use(logger('tiny'));
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', indexRouter);
+/** Load Routes */
+app.use(`/`, indexRouter);
 
-// catch 404 and forward to error handler
+
+/** Catch 404 */
 app.use((req, res, next) => {
-  next(createError(404, 'Route Not Found'));
+  next(createError(404));
 });
 
-// Catch 403
-
-// pass any unhandled errors to the error handler
+// Pass any unhandled errors to the error handler
 app.use(errorHandler);
 
 module.exports = app;
