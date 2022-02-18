@@ -26,7 +26,7 @@ function config() {
 router.get('/', (req, res) => {
   res.json({
     api_version: 'v2',
-    sem_version: '0.0.1',
+    sem_version: '1.0.0',
     description: 'SkyCore API',
     routes: {
       '/': 'This route',
