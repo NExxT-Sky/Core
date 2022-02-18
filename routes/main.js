@@ -263,8 +263,8 @@ router.get('/anime/:id/staff', (req, res) => {
 });
 
 /**
- * Fetch Anime Studio
- * @route GET /anime/:id/studio
+ * Fetch Anime Studios
+ * @route GET /anime/:id/studios
  * @content_type application/json
  * @group Anime
  * @param {string} id.query.required - Anime id
