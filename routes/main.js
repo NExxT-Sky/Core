@@ -5,10 +5,10 @@
 const express = require('express');
 const { get } = require('express/lib/response');
 const router = express.Router();
-const createError = require('http-errors');
 
 const fs = require('fs');
 var path = require('path');
+const { log } = require('console');
 
 /** Read '../config.json' */
 function config() {
@@ -33,7 +33,7 @@ router.get('/', (req, res) => {
       '/anime': {
         '/search/:query': 'Search anime from query',
         '/:id': {
-          '/title_variations': 'Anime title variations',
+          '/titles': 'Anime title variations',
           '/episodes': 'Anime episodes',
           '/characters': 'Anime characters',
           '/staff': 'Anime staff',
@@ -42,8 +42,14 @@ router.get('/', (req, res) => {
           '/relations': 'Anime relations',
           '/image': 'Anime image',
         },
-      }
-    }
+      },
+      '/manga': {
+        '/search/:query': 'Search manga from query',
+        '/:id': {
+          '/titles': 'Manga title variations',
+        },
+      },
+    },
   });
 });
 
@@ -143,15 +149,15 @@ router.get('/anime/:id', (req, res) => {
 });
 
 /**
- * Fetch Anime Title Variations
- * @route GET /anime/:id/title_variations
+ * Fetch Anime Titles
+ * @route GET /anime/:id/titles
  * @content_type application/json
  * @group Anime
  * @param {string} id.query.required - Anime id
- * @returns {object} 200 - Anime title variations
+ * @returns {object} 200 - Anime title
  * @returns {Error} 404 - No anime matching id
  */
-router.get('/anime/:id/title_variations', (req, res) => {
+router.get('/anime/:id/titles', (req, res) => {
   const anilist_api = require('anilist-node');
   const Anilist = new anilist_api();
 
@@ -354,6 +360,100 @@ router.get('/anime/:id/genres', (req, res) => {
     }
   });
 });
+
+/**
+ * @group Manga
+ */
+
+/**
+ * Search Manga
+ * @route GET /manga/search/:query
+ * @content_type application/json
+ * @group Manga
+ * @param {string} query.query.required - Manga name
+ * @returns {object} 200 - Manga search results
+ * @returns {Error} 404 - No manga matching query
+ */
+router.get('/manga/search/:query', (req, res) => {
+  const anilist_api = require('anilist-node');
+  const Anilist = new anilist_api();
+
+  Anilist.searchEntry.manga(req.params.query).then(data => {
+    if (data.pageInfo.total === 0) {
+      res.status(404).json({
+        result: 'error',
+        error: 'No anime matching query'
+      });
+    } else {
+      res.json({
+        result: 'success',
+        data: data.media
+      });
+    }
+  });
+});
+
+/**
+ * Fetch Manga Info
+ * @route GET /manga/:id
+ * @content_type application/json
+ * @group Manga
+ * @param {string} id.query.required - Manga id
+ * @returns {object} 200 - Manga info
+ * @returns {Error} 404 - No manga matching id
+ */
+router.get('/manga/:id', (req, res) => {
+  const anilist_api = require('anilist-node');
+  const Anilist = new anilist_api();
+
+  const id = parseInt(req.params.id);
+
+  Anilist.media.manga(id).then(data => {
+    if (data[0]?.message === 'Not Found.') {
+      res.status(404).json({
+        result: 'error',
+        error: 'No manga matching id'
+      });
+    } else {
+      res.json({
+        result: 'success',
+        data: data
+      });
+    }
+  });
+});
+
+/**
+ * Fetch Manga Titles
+ * @route GET /manga/:id/titles
+ * @content_type application/json
+ * @group Manga
+ * @param {string} id.query.required - Manga id
+ * @returns {object} 200 - Manga title
+ * @returns {Error} 404 - No manga matching id
+ */
+router.get('/manga/:id/titles', (req, res) => {
+  const anilist_api = require('anilist-node');
+  const Anilist = new anilist_api();
+
+  const id = parseInt(req.params.id);
+
+  Anilist.media.manga(id).then(data => {
+    if (data[0]?.message === 'Not Found.') {
+      res.status(404).json({
+        result: 'error',
+        error: 'No manga matching id'
+      });
+    } else {
+
+      res.json({
+        result: 'success',
+        data: data.title
+      });
+    }
+  });
+});
+
 
 // Export as 'router'
 module.exports = router;
