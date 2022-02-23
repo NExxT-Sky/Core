@@ -1,6 +1,6 @@
 {
   "name": "core-api",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "description": "Core API for Sky projects",
   "main": "main.js",
   "scripts": {
@@ -32,10 +32,12 @@
     "express": "^4.17.2",
     "helmet": "^5.0.2",
     "http-errors": "^2.0.0",
+    "jest": "^27.5.1",
     "jikan-api.js": "^1.0.2",
     "jikan-node": "^1.2.1",
     "jikan4.js": "^0.1.3",
     "morgan": "^1.10.0",
-    "nyaapi": "^2.4.3"
+    "nyaapi": "^2.4.3",
+    "response-time": "^2.3.2"
   }
 }
