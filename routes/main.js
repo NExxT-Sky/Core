@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
           '/staff': 'Anime staff',
           '/genres': 'Anime genres',
           '/studios': 'Anime studios',
-          '/relations': 'Anime relations',
+          '/relations': 'Related titles to the anime',
           '/image': 'Anime image',
         },
       },
@@ -48,6 +48,7 @@ router.get('/', (req, res) => {
         '/search/:query': 'Search manga from query',
         '/:id': {
           '/titles': 'Manga title variations',
+          '/relations': 'Related titles to the manga',
         },
       },
     },
