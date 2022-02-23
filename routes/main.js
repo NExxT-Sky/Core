@@ -9,6 +9,7 @@ const router = express.Router();
 const fs = require('fs');
 var path = require('path');
 const { log } = require('console');
+const res = require('express/lib/response');
 
 /** Read '../config.json' */
 function config() {
@@ -454,6 +455,35 @@ router.get('/manga/:id/titles', (req, res) => {
   });
 });
 
+/**
+ * Fetch Manga Relations
+ * @route GET /manga/:id/relations
+ * @content_type application/json
+ * @group Manga
+ * @param {string} id.query.required - Manga id
+ * @returns {object} 200 - Manga relations
+ * @returns {Error} 404 - No manga matching id
+ */
+router.get('/manga/:id/relations', (req, res) => {
+  const anilist_api = require('anilist-node');
+  const Anilist = new anilist_api();
+
+  const id = parseInt(req.params.id);
+
+  Anilist.media.manga(id).then(data => {
+    if (data[0]?.message === 'Not Found.') {
+      res.status(404).json({
+        result: 'error',
+        error: 'No manga matching id'
+      });
+    } else {
+      res.json({
+        result: 'success',
+        data: data.relations
+      });
+    }
+  });
+});
 
 // Export as 'router'
 module.exports = router;
