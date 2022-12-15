@@ -29,7 +29,7 @@
   "dependencies": {
     "anilist-node": "^1.11.0",
     "cookie-parser": "^1.4.6",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "helmet": "^5.0.2",
     "http-errors": "^2.0.0",
     "jest": "^27.5.1",
