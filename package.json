@@ -28,8 +28,8 @@
   "homepage": "https://github.com/NExxT-Sky/Core#readme",
   "dependencies": {
     "anilist-node": "^1.11.0",
-    "cookie-parser": "^1.4.6",
-    "express": "^4.21.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.1",
     "helmet": "^5.0.2",
     "http-errors": "^2.0.0",
     "jest": "^27.5.1",
