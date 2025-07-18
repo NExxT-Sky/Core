@@ -36,8 +36,8 @@
     "jikan-api.js": "^1.0.2",
     "jikan-node": "^1.2.1",
     "jikan4.js": "^1.6.1",
-    "morgan": "^1.10.0",
+    "morgan": "^1.10.1",
     "nyaapi": "^2.4.3",
-    "response-time": "^2.3.2"
+    "response-time": "^2.3.4"
   }
 }
